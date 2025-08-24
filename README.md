@@ -1,162 +1,117 @@
-# AI Chatbot
+Here's an improved version with detailed steps, proper markdown formatting, and clear instructions:
 
-A modular AI chatbot built with Python and Hugging Face APIs. The chatbot is designed with a modular architecture that supports both CLI and web interfaces.
+---
 
-## Features
+# Langchain-Transformers-Python
 
-- 🤖 AI-powered conversations using Hugging Face models
-- 💬 Command-line interface for quick interactions
-- 🔧 Modular design for easy extension
-- 📝 Conversation history management
-- 🔄 Model switching capability
-- 🌐 Web interface foundation (Flask example included)
+This guide walks you through setting up a Python environment, installing dependencies, configuring GPU usage, and running a transformer model with LangChain.
 
-## Setup
+---
 
-### 1. Clone and Navigate
-```bash
-cd aibot
+## 1. Create a Virtual Environment
+
+Creating a virtual environment helps isolate dependencies and prevents conflicts with other Python projects.
+
+### **For Windows (Command Prompt)**
+```sh
+python -m venv langchain-env
+langchain-env\Scripts\activate
 ```
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
+### **For macOS/Linux (Terminal)**
+```sh
+python -m venv langchain-env
+source langchain-env/bin/activate
 ```
 
-### 3. Configure API Token
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+---
 
-2. Edit `.env` and add your Hugging Face API token:
-   ```
-   HUGGINGFACE_API_TOKEN=your_actual_token_here
-   ```
+## 2. Install Requirements
 
-   Get your free API token from: https://huggingface.co/settings/tokens
+Once the virtual environment is activated, install the required dependencies.
 
-## Usage
-
-### Command Line Interface
-Run the chatbot in CLI mode:
-```bash
-python cli.py
+```sh
+pip install langchain transformers langchain-huggingface
 ```
 
-Or with a specific model:
-```bash
-python cli.py microsoft/DialoGPT-large
+---
+
+## 3. Configure GPU Usage
+
+If you have an NVIDIA GPU, install the CUDA-enabled version of PyTorch.
+
+Run the following command (replacing `cu126` with your CUDA version):
+
+```sh
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
 ```
 
-### CLI Commands
-- `/help` - Show help message
-- `/clear` - Clear conversation history
-- `/history` - Show conversation history
-- `/model` - Change the AI model
-- `/quit` - Exit the chatbot
+To check which CUDA version you have installed, run:
 
-### Available Models
-- `microsoft/DialoGPT-medium` (default)
-- `microsoft/DialoGPT-large`
-- `microsoft/DialoGPT-small`
-- `facebook/blenderbot-400M-distill`
-- Any other compatible Hugging Face model
-
-## Project Structure
-
-```
-aibot/
-├── src/
-│   ├── chatbot.py          # Core chatbot logic
-│   └── web_interface.py    # Web interface foundation
-├── cli.py                  # Command-line interface
-├── requirements.txt        # Python dependencies
-├── .env.example           # Environment variables template
-└── README.md              # This file
+```sh
+nvcc --version
 ```
 
-## Modular Design
+If you don’t have CUDA installed, follow the official installation guide:  
+🔗 [CUDA Installation Guide](https://developer.nvidia.com/cuda-downloads)
 
-The chatbot is built with modularity in mind:
+---
 
-- **Core Logic** (`src/chatbot.py`): Contains the main `ChatBot` class with Hugging Face API integration
-- **CLI Interface** (`cli.py`): Command-line interface implementation
-- **Web Foundation** (`src/web_interface.py`): Base classes and Flask example for web interfaces
+## 4. Check for GPU Availability
 
-## Extending with Web Interface
-
-To add a Flask web interface:
-
-1. Install Flask:
-   ```bash
-   pip install flask
-   ```
-
-2. Uncomment the Flask code in `src/web_interface.py`
-
-3. Run the web server:
-   ```python
-   from src.web_interface import run_flask_app
-   run_flask_app()
-   ```
-
-## API Usage
-
-You can also use the chatbot programmatically:
+Run the following Python code to verify that your GPU is available:
 
 ```python
-from src.chatbot import ChatBot
+import torch
 
-# Initialize the chatbot
-bot = ChatBot(model_name="microsoft/DialoGPT-medium")
+# Check if GPU is available
+gpu_available = torch.cuda.is_available()
+device_name = torch.cuda.get_device_name(0) if gpu_available else "No GPU found"
 
-# Chat with the bot
-response = bot.chat("Hello, how are you?")
-print(response)
-
-# Get conversation history
-history = bot.get_history()
-print(history)
+print(f"GPU Available: {gpu_available}")
+print(f"GPU Name: {device_name}")
 ```
 
-## Requirements
+If `torch.cuda.is_available()` returns `False`, ensure that:
+- You have an NVIDIA GPU.
+- The correct version of CUDA is installed.
+- You installed the CUDA-enabled version of PyTorch.
 
-- Python 3.7+
-- Hugging Face API token (free)
-- Internet connection for API calls
+---
 
-## Troubleshooting
+## 5. Set Device in Pipeline
 
-### Common Issues
+Once GPU availability is confirmed, specify the device in the transformer pipeline.
 
-1. **Missing API Token**: Make sure you've set `HUGGINGFACE_API_TOKEN` in your `.env` file
-2. **Model Loading Errors**: Some models may take time to load on first use
-3. **Rate Limiting**: Free Hugging Face accounts have rate limits
+```python
+from transformers import pipeline
 
-### Error Messages
+# Load the model and set device to GPU (device=0)
+model = pipeline(
+    "text-generation",
+    model="mistralai/Mistral-7B-Instruct-v0.1",
+    device=0  # Use GPU (0 refers to the first GPU)
+)
 
-- "API token is required": Set your Hugging Face token
-- "API request failed": Check your internet connection and token validity
-- "Model not found": Verify the model name exists on Hugging Face
+# Generate text
+output = model("What is LangChain?")
+print(output)
+```
 
-## License
+If using a CPU instead of a GPU, change `device=0` to `device=-1`.
 
-MIT License - feel free to use and modify as needed.
+---
 
-## Contributing
+## 🎯 Summary
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+| Step                     | Command / Code |
+|--------------------------|------------------------------------------------|
+| **Create a Virtual Env** | `python -m venv langchain-env && source langchain-env/bin/activate` |
+| **Install Requirements** | `pip install langchain transformers langchain-huggingface` |
+| **Install GPU Support**  | `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126` |
+| **Check GPU Availability** | `print(torch.cuda.is_available())` |
+| **Run Model on GPU** | `pipeline("text-generation", model="mistralai/Mistral-7B-Instruct-v0.1", device=0)` |
 
-## Future Enhancements
+---
 
-- [ ] Streamlit web interface
-- [ ] FastAPI backend
-- [ ] Model fine-tuning support
-- [ ] Chat export functionality
-- [ ] Voice input/output
-- [ ] Multi-language support
+Now you’re ready to use **LangChain and Transformers** with GPU acceleration! 🚀
