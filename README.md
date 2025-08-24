@@ -1,117 +1,74 @@
-Here's an improved version with detailed steps, proper markdown formatting, and clear instructions:
+# AIBOT
 
----
+This project is an AI ChatBot that utilizes the Hugging Face Transformers library to summarize text and answer questions based on the generated summaries. The chatbot is designed to provide simplified summaries tailored to different age groups and allows users to ask questions about the summaries.
 
-# Langchain-Transformers-Python
+## Project Description
 
-This guide walks you through setting up a Python environment, installing dependencies, configuring GPU usage, and running a transformer model with LangChain.
+AIBOT is an AI-powered chatbot that utilizes LangChain and HuggingFace Transformers to provide text summarization and question-answering capabilities. The chatbot is designed to understand user queries and generate relevant responses based on the provided text input.
 
----
+## Features
 
-## 1. Create a Virtual Environment
+- Text summarization tailored for different age groups.
+- Question answering based on summarized content.
+- Built using state-of-the-art transformer models.
 
-Creating a virtual environment helps isolate dependencies and prevents conflicts with other Python projects.
+## Table of Contents
 
-### **For Windows (Command Prompt)**
-```sh
-python -m venv langchain-env
-langchain-env\Scripts\activate
-```
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Changelog](#changelog)
 
-### **For macOS/Linux (Terminal)**
-```sh
-python -m venv langchain-env
-source langchain-env/bin/activate
-```
+## Installation
 
----
+To set up the project, follow these steps:
 
-## 2. Install Requirements
+1. **Clone the repository:**
 
-Once the virtual environment is activated, install the required dependencies.
+   ```sh
+   git clone https://code.swecha.org/shashankxrm/aibot.git
+   cd aibot
+   ```
 
-```sh
-pip install langchain transformers langchain-huggingface
-```
+2. **Create a virtual environment:**
 
----
+   ```sh
+   python -m venv langchain-env
+   langchain-env\Scripts\activate  # For Windows
+   # or
+   source langchain-env/bin/activate  # For macOS/Linux
+   ```
 
-## 3. Configure GPU Usage
+3. **Install the required dependencies:**
 
-If you have an NVIDIA GPU, install the CUDA-enabled version of PyTorch.
+   ```sh
+   pip install -r requirements.txt
+   ```
 
-Run the following command (replacing `cu126` with your CUDA version):
+4. **Configure GPU usage (if applicable):**
+   Follow the instructions in the `README.md` directory to set up GPU support.
 
-```sh
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
-```
+## Usage
 
-To check which CUDA version you have installed, run:
+To run the chatbot application:
 
-```sh
-nvcc --version
-```
+1. Run the main script:
 
-If you don’t have CUDA installed, follow the official installation guide:  
-🔗 [CUDA Installation Guide](https://developer.nvidia.com/cuda-downloads)
+   ```sh
+   python main.py
+   ```
 
----
+2. Follow the prompts to enter text for summarization and ask questions about the summary.
 
-## 4. Check for GPU Availability
+## Contributing
 
-Run the following Python code to verify that your GPU is available:
+Contributions are welcome! Please read the [CONTRIBUTING.md](../CONTRIBUTING.md) file for guidelines on how to contribute to this project.
 
-```python
-import torch
+## License
 
-# Check if GPU is available
-gpu_available = torch.cuda.is_available()
-device_name = torch.cuda.get_device_name(0) if gpu_available else "No GPU found"
+This project is licensed under the AGPLv3 License. See the [LICENSE](../LICENSE) file for details.
 
-print(f"GPU Available: {gpu_available}")
-print(f"GPU Name: {device_name}")
-```
+## Changelog
 
-If `torch.cuda.is_available()` returns `False`, ensure that:
-- You have an NVIDIA GPU.
-- The correct version of CUDA is installed.
-- You installed the CUDA-enabled version of PyTorch.
-
----
-
-## 5. Set Device in Pipeline
-
-Once GPU availability is confirmed, specify the device in the transformer pipeline.
-
-```python
-from transformers import pipeline
-
-# Load the model and set device to GPU (device=0)
-model = pipeline(
-    "text-generation",
-    model="mistralai/Mistral-7B-Instruct-v0.1",
-    device=0  # Use GPU (0 refers to the first GPU)
-)
-
-# Generate text
-output = model("What is LangChain?")
-print(output)
-```
-
-If using a CPU instead of a GPU, change `device=0` to `device=-1`.
-
----
-
-## 🎯 Summary
-
-| Step                     | Command / Code |
-|--------------------------|------------------------------------------------|
-| **Create a Virtual Env** | `python -m venv langchain-env && source langchain-env/bin/activate` |
-| **Install Requirements** | `pip install langchain transformers langchain-huggingface` |
-| **Install GPU Support**  | `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126` |
-| **Check GPU Availability** | `print(torch.cuda.is_available())` |
-| **Run Model on GPU** | `pipeline("text-generation", model="mistralai/Mistral-7B-Instruct-v0.1", device=0)` |
-
----
-
-Now you’re ready to use **LangChain and Transformers** with GPU acceleration! 🚀
+See the [CHANGELOG.md](../CHANGELOG.md) file for a list of changes and updates to the project.
