@@ -1,0 +1,19 @@
+[tool]
+name = "aibot"
+version = "0.1.0"
+description = "A chatbot application that utilizes Hugging Face Transformers for text summarization and question answering."
+authors = ["shashankreddy0608@gmail.com"]
+license = "AGPL-3.0"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dependencies = ["langchain", "transformers", "langchain-huggingface", "torch"]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
